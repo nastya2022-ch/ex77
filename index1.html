@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="imageBrowserApp">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Browser</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="inc/loading.css" />
+  <style>
+    .td-img {
+      padding: 0px;
+      width: 106px;
+      height: 60px;
+    }
+
+    body {
+      overflow-y: scroll;
+    }
+
+    /* Remove spacing between small images */
+    .col-md-2 {
+      margin-right: auto;
+      padding: auto;
+    }
+  </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <script src="inc/scripts.js"></script>
+  <script>
+    var app = angular.module('imageBrowserApp', []);
+
+    app.controller('ImageBrowserController', function ($scope) {
+      $scope.images = [];
+      $scope.selectedImage = null;
+      $scope.isLoading = false;
+
+      // Function to load images
+      $scope.loadImages = function () {
+        $scope.isLoading = true;
+        for (var i = 1; i <= 18; i++) {
+          var image = {
+            id: i,
+            largeUrl: 'https://picsum.photos/id/' + i + '/350/350',
+            smallUrl: 'https://picsum.photos/id/' + i + '/50/50'
+          };
+          $scope.images.push(image);
+        }
+        $scope.isLoading = false;
+      };
+
+      // Function to select an image
+      $scope.selectImage = function (selectedImage) {
+        $scope.selectedImage = selectedImage;
+      };
+    });
+  </script>
+</head>
+
+<body ng-controller="ImageBrowserController" ng-init="loadImages()">
+  <div class="container">
+    <h1>Image Browser</h1>
+
+    <div class="d-flex">
+      <div id="pager"></div>
+      <div class="ml-auto">
+        <div class="lds-ellipsis" ng-show="isLoading">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="app">
+      <div class="row no-gutters"> <!-- Added no-gutters class to remove spacing between columns -->
+        <div class="col-md-2" ng-repeat="image in images">
+          <img ng-src="{{image.smallUrl}}" alt="Thumbnail" class="thumbnail-img" ng-click="selectImage(image)"
+            ng-class="{ 'selected-img': selectedImage === image }" />
+        </div>
+      </div>
+
+      <div class="mt-4" ng-if="selectedImage">
+        <h3>Selected Image</h3>
+        <img ng-src="{{selectedImage.largeUrl}}" alt="Selected Image" />
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
